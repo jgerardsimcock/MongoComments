@@ -45,13 +45,14 @@ res.writeHead(200, {
 });
 
 res.write(body);
-res.end();
+res.send();
 
 });
 
 server.post('/post_comment', function(req, res){
   var comment = new Comment({
     comment_text: req.body.comment
+    res.send();
   })
 
   comment.save(function(err){
@@ -61,5 +62,5 @@ server.post('/post_comment', function(req, res){
 
 
 server.listen(1337, function(){
-  console.log('%s listening at %s', server.name)
-})
+  console.log('%s listening at %s', server.name, server.url);
+});
