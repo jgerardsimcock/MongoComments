@@ -1,5 +1,5 @@
-var restify = require('restify');
-var fs = require('fs');
+var restify = require('restify'); //ROUTE HANDLING
+// var fs = require('fs');//FILE HANDLING
 var mongoose = require('mongoose'); //THIS ACCESSES THE MONGOOSE MODULE
 //THIS POINTS TO OUR DATABASE ON MONGOLABS.COM 
 // GO TO YOUR MONGOLABS, ADD USER AND YOU WILL SEE THIS INFORMATION. 
@@ -37,25 +37,26 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
 server.get('/', function(req,res){
+  var body = "Hello World";
+
+  res.writeHead(200, {
+    'Content-Length': Buffer.byteLength(body),
+    'Content-Type': 'text/html'
+  });
+
+  res.write(body);
   res.send();
-
-res.writeHead(200, {
-  'Content-Length': Buffer.byteLength(body),
-  'Content-Type': 'text/html'
-});
-
-res.write(body);
-res.send();
 
 });
 
 server.post('/post_comment', function(req, res){
-  var comment = new Comment({
-    comment_text: req.body.comment
-    res.send();
-  })
-
+  var comment = new Comment({ //THIS IS PART OF MONGOOSE MODULE
+    comment: req.body.comment //THE COMMENT: PART GETS ITS INITIALIZATION FROM LINE 20. 
+  });
+            //PARAMETER COMMENT WILL BE READING FIELF "COMMENT" FROM CLIENT 
   comment.save(function(err){
+
+    res.send("Your comments have been saved");
 
   });
 });
