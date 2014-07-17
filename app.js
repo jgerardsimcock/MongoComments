@@ -18,6 +18,7 @@ var Schema = mongoose.Schema;
 //THE SCHEMA HAS A PROPERTY COMMENT THAT TAKES A STRING.
 var commentSchema = new Schema({
   comment:  String,
+  created_at: Date
   
   });
 
@@ -25,7 +26,7 @@ var commentSchema = new Schema({
 //VAR NAME IS FLEXIBLE BUT MONGOOSE.MODEL IS REQUIRED. 
 //WE COMPILE OUR SCHEMA INTO A MODEL.
 //MODEL IS A CLASS IN WHICH WE CONSTRUCT DOCUMENTS
-var Comment = mongoose.model('Comment', commentSchema);
+var Comment = mongoose.model('poops', commentSchema);
 
 var server = restify.createServer({
     name: 'app',
@@ -37,28 +38,38 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
 server.get('/', function(req,res){
-  var body = "Hello World";
+  var body = " ";
 
-  res.writeHead(200, {
-    'Content-Length': Buffer.byteLength(body),
-    'Content-Type': 'text/html'
+
+  Comment.find(function(err, things){
+    for(i in things){
+      console.log(things[i].comment);
+      body += things[i].comment;
+      
+    }
+
+    res.writeHead(200, {
+      'Content-Length': Buffer.byteLength(body),
+      'Content-Type': 'text/html'
+    });
+
+    res.write(body);
+    res.send();
   });
-
-  res.write(body);
-  res.send();
-
 });
 
-server.post('/post_comment', function(req, res){
+server.post('/post_comment', function (req, res){
   var comment = new Comment({ //THIS IS PART OF MONGOOSE MODULE
-    comment: req.body.comment //THE COMMENT: PART GETS ITS INITIALIZATION FROM LINE 20. 
+    comment: req.body.comment //THE COMMENT: PART GETS ITS INITIALIZATION FROM LINE 20.
+    , created_at: Date.now() 
   });
             //PARAMETER COMMENT WILL BE READING FIELF "COMMENT" FROM CLIENT 
   comment.save(function(err){
-
+  
     res.send("Your comments have been saved");
 
   });
+
 });
 
 
